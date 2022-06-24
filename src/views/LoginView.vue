@@ -12,7 +12,7 @@
       <div class="right">
         <n-card class="right-card">
           <n-h2 style="text-align: left; font-weight: bold">账号登录</n-h2>
-          <n-space vertical :size="spacesize" style="text-align: left">
+          <n-space vertical :size="24" style="text-align: left">
             <n-input type="text"
             v-model:value="username"
             placeholder="请输入用户名"></n-input>
@@ -36,8 +36,7 @@ export default {
   setup () {
     const username = ref('')
     const password = ref('')
-    const spacesize = 24
-    return { username, password, spacesize }
+    return { username, password }
   }
 }
 </script>

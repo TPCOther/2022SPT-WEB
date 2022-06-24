@@ -9,7 +9,7 @@
       <n-breadcrumb-item>Dashboard</n-breadcrumb-item>
       <n-breadcrumb-item>Home</n-breadcrumb-item>
     </n-breadcrumb>
-    <n-space :size="spacesize">
+    <n-space :size="24">
       <n-button text style="font-size: 20px">
         <n-badge dot processing>
           <n-icon :depth="2"><noti-icon /></n-icon>
@@ -31,7 +31,6 @@ export default {
     NotiIcon
   },
   setup () {
-    const spacesize = 24
     const options = [
       { key: 'me', label: 'Hey, Master' },
       { key: 'divider', type: 'divider' },
@@ -41,7 +40,7 @@ export default {
       { key: 'logout', label: 'Logout' }
     ]
 
-    return { options, spacesize }
+    return { options }
   }
 }
 </script>

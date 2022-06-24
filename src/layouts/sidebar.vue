@@ -11,7 +11,7 @@
 import { h } from 'vue'
 import { RouterLink } from 'vue-router'
 import { NIcon } from 'naive-ui'
-import { LogInOutline, Alert } from '@vicons/ionicons5'
+import { LogInOutline, HomeOutline } from '@vicons/ionicons5'
 
 function renderIcon (icon) {
   return () => h(NIcon, null, { default: () => h(icon) })
@@ -30,14 +30,14 @@ export default {
   setup () {
     const menuOptions = [
       {
+        label: renderLink('Home', '首页'),
+        key: 'Home',
+        icon: renderIcon(HomeOutline)
+      },
+      {
         label: renderLink('Login', '登录'),
         key: 'Login',
         icon: renderIcon(LogInOutline)
-      },
-      {
-        label: renderLink('about', '关于'),
-        key: 'about',
-        icon: renderIcon(Alert)
       }
     ]
 
