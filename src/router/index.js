@@ -5,6 +5,11 @@ const mainRoute = [
     path: '/home',
     name: 'Home',
     component: () => import(/* webpackChunkName: "home" */ '../views/HomeView.vue')
+  },
+  {
+    path: '/table',
+    name: 'Table',
+    component: () => import(/* webpackChunkName: "home" */ '../views/TableView.vue')
   }
 ]
 
