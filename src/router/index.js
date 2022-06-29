@@ -20,6 +20,11 @@ const mainRoute = [
     path: '/order',
     name: 'Order',
     component: () => import(/* webpackChunkName: "home" */ '../views/OrderView.vue')
+  },
+  {
+    path: '/dish',
+    name: 'Dish',
+    component: () => import(/* webpackChunkName: "home" */ '../views/DishView.vue')
   }
 ]
 

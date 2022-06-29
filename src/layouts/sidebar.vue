@@ -11,7 +11,7 @@
 import { h } from 'vue'
 import { RouterLink } from 'vue-router'
 import { NIcon } from 'naive-ui'
-import { LogInOutline, HomeOutline, GridOutline, ListOutline, StorefrontOutline } from '@vicons/ionicons5'
+import { LogInOutline, HomeOutline, GridOutline, ClipboardOutline, StorefrontOutline, RestaurantOutline } from '@vicons/ionicons5'
 
 function renderIcon (icon) {
   return () => h(NIcon, null, { default: () => h(icon) })
@@ -47,7 +47,12 @@ export default {
       {
         label: renderLink('Order', '订单管理'),
         key: 'Order',
-        icon: renderIcon(ListOutline)
+        icon: renderIcon(ClipboardOutline)
+      },
+      {
+        label: renderLink('Dish', '菜品管理'),
+        key: 'Dish',
+        icon: renderIcon(RestaurantOutline)
       },
       {
         label: renderLink('Login', '登录'),

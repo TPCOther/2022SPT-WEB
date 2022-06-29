@@ -64,13 +64,20 @@
                     </div>
                 </div>
                 <div class="order-footer">
-                    <n-space>
-                        <n-button type="error">删除订单</n-button>
-                    </n-space>
                     <div class="order-footer-info">
                     共<a class="order-bold"> {{getTotalNum(item.dishes)}} </a>种，共<a class="order-bold"> {{item.dishes.length}} </a>个商品，总计：
                     <a class="order-total">￥{{getTotalPrice(item.dishes)}}</a>
                     </div>
+                </div>
+                <div style="display: flex; margin-top: 10px;">
+                    <n-space>
+                    <n-tag>订单未支付</n-tag>
+                    <n-tag>上菜完成</n-tag>
+                    </n-space>
+                    <n-space style="margin-left: auto;">
+                    <n-button type="error" block ghost>删除订单</n-button>
+                    <n-button type="primary" block ghost>修改订单</n-button>
+                    </n-space>
                 </div>
             </n-space>
             </n-collapse-item>
@@ -168,10 +175,13 @@ export default {
         }
     }
     &-footer{
-        margin-top: 20px;
-        display: flex;
+        margin-top: 10px;
+        text-align: right;
         align-items: center;
         font-size: 16px;
+        box-sizing: border-box;
+        padding-bottom: 20px;
+        border-bottom: 1px dotted #c2c2c2;
         &-info{
             margin-left: auto;
             font-size: 16px;
