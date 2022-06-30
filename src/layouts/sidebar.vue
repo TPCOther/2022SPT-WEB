@@ -22,7 +22,11 @@
 import { h, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { NIcon } from 'naive-ui'
-import { LogInOutline, HomeOutline, GridOutline, ClipboardOutline, StorefrontOutline, RestaurantOutline, LayersOutline } from '@vicons/ionicons5'
+import {
+  LogInOutline, HomeOutline, GridOutline,
+  ClipboardOutline, StorefrontOutline, RestaurantOutline,
+  LayersOutline, PeopleOutline
+} from '@vicons/ionicons5'
 
 function renderIcon (icon) {
   return () => h(NIcon, null, { default: () => h(icon) })
@@ -71,6 +75,11 @@ export default {
             icon: renderIcon(LayersOutline)
           }
         ]
+      },
+      {
+        label: renderLink('Member', '会员管理'),
+        key: 'Member',
+        icon: renderIcon(PeopleOutline)
       },
       {
         label: renderLink('Login', '登录'),

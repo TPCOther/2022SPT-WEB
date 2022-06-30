@@ -30,6 +30,11 @@ const mainRoute = [
     path: '/category',
     name: 'Category',
     component: () => import(/* webpackChunkName: "category" */ '../views/CategoryView.vue')
+  },
+  {
+    path: '/member',
+    name: 'Member',
+    component: () => import(/* webpackChunkName: "member" */ '../views/MemberView.vue')
   }
 ]
 
