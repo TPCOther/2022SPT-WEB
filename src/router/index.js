@@ -9,22 +9,27 @@ const mainRoute = [
   {
     path: '/table',
     name: 'Table',
-    component: () => import(/* webpackChunkName: "home" */ '../views/TableView.vue')
+    component: () => import(/* webpackChunkName: "table" */ '../views/TableView.vue')
   },
   {
     path: '/sales',
     name: 'Sales',
-    component: () => import(/* webpackChunkName: "home" */ '../views/SalesView.vue')
+    component: () => import(/* webpackChunkName: "sales" */ '../views/SalesView.vue')
   },
   {
     path: '/order',
     name: 'Order',
-    component: () => import(/* webpackChunkName: "home" */ '../views/OrderView.vue')
+    component: () => import(/* webpackChunkName: "order" */ '../views/OrderView.vue')
   },
   {
     path: '/dish',
     name: 'Dish',
-    component: () => import(/* webpackChunkName: "home" */ '../views/DishView.vue')
+    component: () => import(/* webpackChunkName: "dish" */ '../views/DishView.vue')
+  },
+  {
+    path: '/category',
+    name: 'Category',
+    component: () => import(/* webpackChunkName: "category" */ '../views/CategoryView.vue')
   }
 ]
 

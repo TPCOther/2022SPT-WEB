@@ -1,17 +1,28 @@
 <template>
-  <n-layout-sider bordered>
+  <n-layout-sider bordered
+        collapse-mode="width"
+        :collapsed-width="64"
+        :width="240"
+        :collapsed="collapsed"
+        show-trigger
+        @collapse="collapsed = true"
+        @expand="collapsed = false"
+      >
     <div class="header">
       <div class="header-caption">SPT点餐管理后台</div>
     </div>
-    <n-menu :options="menuOptions"></n-menu>
+    <n-menu :options="menuOptions" style="text-align: left"
+          :collapsed="collapsed"
+          :collapsed-width="64"
+          :collapsed-icon-size="22"></n-menu>
   </n-layout-sider>
 </template>
 
 <script>
-import { h } from 'vue'
+import { h, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { NIcon } from 'naive-ui'
-import { LogInOutline, HomeOutline, GridOutline, ClipboardOutline, StorefrontOutline, RestaurantOutline } from '@vicons/ionicons5'
+import { LogInOutline, HomeOutline, GridOutline, ClipboardOutline, StorefrontOutline, RestaurantOutline, LayersOutline } from '@vicons/ionicons5'
 
 function renderIcon (icon) {
   return () => h(NIcon, null, { default: () => h(icon) })
@@ -52,7 +63,14 @@ export default {
       {
         label: renderLink('Dish', '菜品管理'),
         key: 'Dish',
-        icon: renderIcon(RestaurantOutline)
+        icon: renderIcon(RestaurantOutline),
+        children: [
+          {
+            label: renderLink('Category', '菜品分类'),
+            key: 'Category',
+            icon: renderIcon(LayersOutline)
+          }
+        ]
       },
       {
         label: renderLink('Login', '登录'),
@@ -61,7 +79,9 @@ export default {
       }
     ]
 
-    return { menuOptions }
+    const collapsed = ref(false)
+
+    return { menuOptions, collapsed }
   }
 }
 </script>
@@ -77,6 +97,12 @@ export default {
     color: #18a058;
     font-weight: bold;
     font-size: 24px;
+  }
+}
+
+@media screen and (max-width: 240px){
+  .header{
+    display: none;
   }
 }
 </style>
