@@ -25,7 +25,7 @@ import { NIcon } from 'naive-ui'
 import {
   LogInOutline, HomeOutline, GridOutline,
   ClipboardOutline, StorefrontOutline, RestaurantOutline,
-  LayersOutline, PeopleOutline
+  LayersOutline, PeopleOutline, PersonCircleOutline
 } from '@vicons/ionicons5'
 
 function renderIcon (icon) {
@@ -80,6 +80,11 @@ export default {
         label: renderLink('Member', '会员管理'),
         key: 'Member',
         icon: renderIcon(PeopleOutline)
+      },
+      {
+        label: renderLink('Staff', '员工管理'),
+        key: 'Staff',
+        icon: renderIcon(PersonCircleOutline)
       },
       {
         label: renderLink('Login', '登录'),
