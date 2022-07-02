@@ -1,6 +1,16 @@
 <template>
+  <n-message-provider>
+    <MessageApi />
+  </n-message-provider>
   <router-view/>
 </template>
+
+<script>
+import MessageApi from './components/message-api.vue'
+export default {
+  components: { MessageApi }
+}
+</script>
 
 <style lang="scss">
 #app {
