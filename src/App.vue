@@ -2,13 +2,17 @@
   <n-message-provider>
     <MessageApi />
   </n-message-provider>
+  <n-dialog-provider>
+    <DialogApi />
+  </n-dialog-provider>
   <router-view/>
 </template>
 
 <script>
 import MessageApi from './components/message-api.vue'
+import DialogApi from './components/dialog-api.vue'
 export default {
-  components: { MessageApi }
+  components: { MessageApi, DialogApi }
 }
 </script>
 
