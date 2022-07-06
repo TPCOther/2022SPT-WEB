@@ -1,5 +1,7 @@
+import { get } from '@/utils/request'
+import { reactive } from 'vue'
 export const useOrderEffect = () => {
-  const orders = [
+  const orders = reactive([
     {
       orderId: '17219833198391913',
       dishes: [
@@ -87,7 +89,7 @@ export const useOrderEffect = () => {
         }
       ]
     }
-  ]
+  ])
 
   const getTotalPrice = (dishes) => {
     let total = 0
@@ -105,5 +107,27 @@ export const useOrderEffect = () => {
     return total
   }
 
-  return { orders, getTotalPrice, getTotalNum }
+  const getOrders = async (pageSize, pageIndex) => {
+    const res = await get('/order/getorderlist', { pageSize: pageSize, pageIndex: pageIndex })
+    if (res.code === 200) {
+      res.data.forEach(orderitem => {
+        const order = {}
+        order.orderId = orderitem.orderId
+        order.dishes = []
+        orderitem.orderFoodList.forEach(dish => {
+          order.dishes.push({
+            dishName: dish.foodName,
+            dishImgUrl: dish.foodImg,
+            dishNum: dish.orderFoodNum,
+            dishPrice: dish.foodNormalPrice
+          })
+        })
+        orders.push(order)
+      })
+    } else {
+      window.$message.error(res.msg)
+    }
+  }
+
+  return { orders, getTotalPrice, getTotalNum, getOrders }
 }

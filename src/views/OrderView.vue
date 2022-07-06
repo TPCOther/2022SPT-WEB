@@ -53,7 +53,7 @@
         <n-collapse class="order">
             <n-collapse-item v-for="item in orders" :key="item.orderId" :name="item.orderId">
             <template #header><a class="order-caption">订单号{{item.orderId}}</a></template>
-            <div class="divider"></div>
+            <template #header-extra><div class="order-item-title">2021-02-01 15:00:01</div></template>
             <n-space vertical>
                 <div class="order-item" v-for="dish in item.dishes" :key="dish.dishName">
                     <img :src="dish.dishImgUrl" class="order-item-img">
@@ -65,7 +65,7 @@
                 </div>
                 <div class="order-footer">
                     <div class="order-footer-info">
-                    共<a class="order-bold"> {{getTotalNum(item.dishes)}} </a>种，共<a class="order-bold"> {{item.dishes.length}} </a>个商品，总计：
+                    共<a class="order-bold"> {{item.dishes.length}} </a>种，共<a class="order-bold"> {{getTotalNum(item.dishes)}} </a>个商品，总计：
                     <a class="order-total">￥{{getTotalPrice(item.dishes)}}</a>
                     </div>
                 </div>
@@ -98,6 +98,7 @@ import {
   LogoWechat
 } from '@vicons/ionicons5'
 import { useOrderEffect } from '../utils/order'
+import { onMounted } from 'vue'
 export default {
   name: 'order',
   components: {
@@ -109,7 +110,11 @@ export default {
     LogoWechat
   },
   setup () {
-    const { orders, getTotalPrice, getTotalNum } = useOrderEffect()
+    const { orders, getTotalPrice, getTotalNum, getOrders } = useOrderEffect()
+
+    onMounted(() => {
+      getOrders(10, 1)
+    })
 
     return { orders, getTotalPrice, getTotalNum }
   }

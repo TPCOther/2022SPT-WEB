@@ -1,4 +1,4 @@
-import { reactive } from 'vue'
+import { reactive, ref, computed } from 'vue'
 import { post, get } from '../utils/request'
 export const useTableEffect = (newArea, newTable, showAreaModal, showTableModal) => {
   const areas = reactive([
@@ -22,48 +22,81 @@ export const useTableEffect = (newArea, newTable, showAreaModal, showTableModal)
 
   const tables = reactive([
     {
+      id: 1,
       area: '一楼',
       number: '1',
       isfree: 0,
       cost: '560.0'
     },
     {
+      id: 2,
       area: '一楼',
       number: '2',
       isfree: 0,
       cost: '224.0'
     },
     {
+      id: 3,
       area: '一楼',
       number: '3',
       isfree: 1,
       cost: ''
     },
     {
+      id: 4,
       area: '一楼',
       number: '4',
       isfree: 1,
       cost: ''
     },
     {
+      id: 5,
       area: '一楼',
       number: '5',
       isfree: 0,
       cost: '312.0'
     },
     {
+      id: 6,
       area: '一楼',
       number: '6',
       isfree: 0,
       cost: '780.0'
     },
     {
+      id: 7,
       area: '包间：春暖花开',
       number: '1',
       isfree: 0,
       cost: '1180.0'
     }
   ])
+
+  const orderinfo = ref([
+    {
+      name: '煸炒林间山野菜',
+      price: 26,
+      amount: 1
+    },
+    {
+      name: '宫保鸡丁',
+      price: 22,
+      amount: 1
+    },
+    {
+      name: '铁板黑胡椒蒙古肉',
+      price: 26,
+      amount: 1
+    }
+  ])
+
+  const total = computed(() => {
+    let total = 0
+    orderinfo.value.forEach(item => {
+      total += item.price * item.amount
+    })
+    return total
+  })
 
   const getArea = async () => {
     const res = await get('/area/select')
@@ -84,10 +117,27 @@ export const useTableEffect = (newArea, newTable, showAreaModal, showTableModal)
     if (res.code === 200) {
       res.data.forEach(item => {
         tables.push({
+          id: item.dinTableId,
           area: item.areaName,
           number: item.dinTableName,
           isfree: !item.dinTableState,
           cost: item.tbOrderAmount.toFixed(1)
+        })
+      })
+    } else {
+      window.$message.error(res.msg)
+    }
+  }
+
+  const getTableOrder = async (tableId) => {
+    const res = await get('/order/getlastorderbydintable', { dinTableId: tableId })
+    orderinfo.value = []
+    if (res.code === 1111) {
+      res.data.orderFoodList.forEach(item => {
+        orderinfo.value.push({
+          name: item.foodName,
+          price: item.foodNormalPrice,
+          amount: item.orderFoodNum
         })
       })
     } else {
@@ -140,5 +190,5 @@ export const useTableEffect = (newArea, newTable, showAreaModal, showTableModal)
     }
   }
 
-  return { areas, tables, getArea, getTable, addArea, addTable, deleteArea }
+  return { areas, tables, orderinfo, total, getArea, getTable, getTableOrder, addArea, addTable, deleteArea }
 }

@@ -19,7 +19,7 @@
             <n-input type="password"
             v-model:value="password"
             placeholder="请输入密码"></n-input>
-            <n-button block type="primary" size="large">登录</n-button>
+            <n-button block type="primary" size="large" @click="login">登录</n-button>
             <div style="text-align:right">忘记密码?</div>
           </n-space>
         </n-card>
@@ -30,13 +30,32 @@
 
 <script>
 import { ref } from 'vue'
-
+import { useRouter } from 'vue-router'
+import { post } from '@/utils/request'
 export default {
   name: 'LoginView',
   setup () {
     const username = ref('')
     const password = ref('')
-    return { username, password }
+    const router = useRouter()
+
+    const login = async () => {
+      const res = await post('/staff/login', {
+        staffAccount: username.value,
+        staffPassword: password.value
+      })
+      if (res.code === 200) {
+        localStorage.isLogin = true
+        localStorage.token = res.token
+        localStorage.setItem('menu', JSON.stringify(res.menu))
+        router.push({ name: 'Home' })
+      } else {
+        console.log(res)
+        window.$message.error(res.msg)
+      }
+    }
+
+    return { username, password, login }
   }
 }
 </script>

@@ -11,7 +11,7 @@
     <div class="header">
       <div class="header-caption">SPT点餐管理后台</div>
     </div>
-    <n-menu :options="menuOptions" style="text-align: left"
+    <n-menu :options="permMenuOptions" style="text-align: left"
           :collapsed="collapsed"
           :collapsed-width="64"
           :collapsed-icon-size="22"></n-menu>
@@ -19,13 +19,14 @@
 </template>
 
 <script>
-import { h, ref } from 'vue'
+import { h, ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { NIcon } from 'naive-ui'
 import {
   LogInOutline, HomeOutline, GridOutline,
   ClipboardOutline, StorefrontOutline, RestaurantOutline,
-  LayersOutline, PeopleOutline, PersonCircleOutline
+  LayersOutline, PeopleOutline, PersonCircleOutline,
+  EaselOutline
 } from '@vicons/ionicons5'
 
 function renderIcon (icon) {
@@ -87,15 +88,27 @@ export default {
         icon: renderIcon(PersonCircleOutline)
       },
       {
+        label: renderLink('Kitchen', '后厨展板'),
+        key: 'Kitchen',
+        icon: renderIcon(EaselOutline)
+      },
+      {
         label: renderLink('Login', '登录'),
         key: 'Login',
         icon: renderIcon(LogInOutline)
       }
     ]
 
+    const permMenuOptions = computed(() => {
+      const menu = JSON.parse(localStorage.getItem('menu'))
+      return menuOptions.filter(item => {
+        return menu.includes(item.key)
+      })
+    })
+
     const collapsed = ref(false)
 
-    return { menuOptions, collapsed }
+    return { permMenuOptions, collapsed }
   }
 }
 </script>

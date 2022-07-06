@@ -43,7 +43,7 @@
         </template>
         <n-grid x-gap="24" y-gap="8" cols="2 1280:6 1000:4 600:3">
             <n-gi v-for="item in currentTable" :key="item">
-                <n-card content-style="padding: 0;" class="table" :class="{'active': !item.isfree }" @click="activate()">
+                <n-card content-style="padding: 0;" class="table" :class="{'active': !item.isfree }" @click="activate(item.id)">
                     <div class="table-header" :class="{'active-header': !item.isfree }">
                         <div class="table-caption">{{item.area}}</div>
                         <div class="table-text" :class="{'active-text': !item.isfree }">({{item.number}}号桌)</div>
@@ -108,7 +108,7 @@
 
 <script>
 import { useTableEffect } from '@/utils/table'
-import { reactive, ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { AddCircleOutline as AddIcon, SettingsOutline as SettingIcon } from '@vicons/ionicons5'
 export default {
   name: 'TableView',
@@ -126,7 +126,7 @@ export default {
       areaId: 0,
       dinTableName: ''
     })
-    const { areas, tables, getArea, getTable, addArea, addTable } = useTableEffect(newArea, newTable, showAreaModal, showTableModal)
+    const { areas, tables, orderinfo, total, getArea, getTable, getTableOrder, addArea, addTable } = useTableEffect(newArea, newTable, showAreaModal, showTableModal)
 
     const filterArea = (area) => {
       if (currentArea.value === '全部') {
@@ -146,39 +146,10 @@ export default {
 
     const active = ref(false)
 
-    const activate = () => {
+    const activate = async (id) => {
+      await getTableOrder(id)
       active.value = true
     }
-
-    // const handleClose = () => {
-
-    // }
-
-    const orderinfo = reactive([
-      {
-        name: '煸炒林间山野菜',
-        price: 26,
-        amount: 1
-      },
-      {
-        name: '宫保鸡丁',
-        price: 22,
-        amount: 1
-      },
-      {
-        name: '铁板黑胡椒蒙古肉',
-        price: 26,
-        amount: 1
-      }
-    ])
-
-    const total = computed(() => {
-      let total = 0
-      orderinfo.forEach(item => {
-        total += item.price * item.amount
-      })
-      return total
-    })
 
     onMounted(() => {
       getArea()

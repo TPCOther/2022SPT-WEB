@@ -40,6 +40,11 @@ const mainRoute = [
     path: '/staff',
     name: 'Staff',
     component: () => import(/* webpackChunkName: "staff" */ '../views/StaffView.vue')
+  },
+  {
+    path: '/kitchen',
+    name: 'Kitchen',
+    component: () => import(/* webpackChunkName: "kitchen" */ '../views/KitchenView.vue')
   }
 ]
 
@@ -68,6 +73,23 @@ const routes = [
 const router = createRouter({
   history: createWebHashHistory(),
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  const { isLogin } = localStorage
+  const { name } = to
+  const isLoginPage = (name === 'Login')
+  console.log(isLogin === true, isLoginPage === true)
+  if (isLoginPage === true) {
+    next()
+    console.log('isLoginPage')
+  } else if (isLogin === 'true') {
+    next()
+    console.log('isLogin')
+  } else {
+    next({ name: 'Login' })
+    console.log('Login')
+  }
 })
 
 export default router

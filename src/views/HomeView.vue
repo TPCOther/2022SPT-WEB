@@ -23,7 +23,7 @@
             <p>更新于5分钟前</p>
           </n-space>
           <div class="shopinfo-number red-text">
-           <n-number-animation  :from="0" :to="500.00" :precision="2" />
+           <n-number-animation  :from="0" :to="incomeToday.toFixed(2)" :precision="2" />
           </div>
         </n-card>
       </n-col>
@@ -34,14 +34,14 @@
             <p>更新于5分钟前</p>
           </n-space>
           <div class="shopinfo-number red-text">
-           <n-number-animation  :from="0" :to="95" />
+           <n-number-animation  :from="0" :to="effectiveOrder" />
           </div>
         </n-card>
       </n-col>
     </n-row>
     <n-row>
       <n-card class="chart">
-        <div>营业额度曲线图</div>
+        <div style="font-size: 24px; font-weight: bold;">一周营业额度曲线图</div>
         <v-chart autoresize :option="chartData"></v-chart>
       </n-card>
     </n-row>
@@ -56,12 +56,16 @@
 </template>
 
 <script>
-import { reactive } from 'vue'
+import { ref, onMounted } from 'vue'
+import { get } from '@/utils/request'
 import { LocationOutline, CallOutline } from '@vicons/ionicons5'
+import dayjs from 'dayjs'
 export default {
   name: 'HomeView',
   setup () {
-    const cardData = reactive([
+    const effectiveOrder = ref(0)
+    const incomeToday = ref(0)
+    const cardData = ref([
       {
         title: '商品种类',
         value: '12'
@@ -80,22 +84,49 @@ export default {
       }
     ])
 
-    const chartData = reactive({
+    const chartData = ref({
       xAxis: {
         type: 'category',
-        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        data: []
       },
       yAxis: {
         type: 'value'
       },
+      tooltip: {
+        trigger: 'axis'
+      },
       series: [
         {
           data: [0, 230, 224, 218, 135, 147, 260],
-          type: 'line'
+          type: 'line',
+          smooth: true,
+          areaStyle: {}
         }
       ]
     })
-    return { LocationOutline, CallOutline, chartData, cardData }
+
+    const getStatistics = async () => {
+      for (let i = 6; i >= 0; i--) {
+        const date = dayjs().subtract(i, 'day').format('MM-DD')
+        chartData.value.xAxis.data.push(date)
+      }
+      const res = await get('/order/statisticsorder')
+      if (res.code === 200) {
+        cardData.value[1].value = res.data.foodCategoryCount
+        cardData.value[2].value = res.data.foodCount
+        cardData.value[3].value = res.data.VIPCount
+        chartData.value.series[0].data = res.data.revenueDay
+        effectiveOrder.value = res.data.effectiveOrder
+        incomeToday.value = res.data.revenueDay[res.data.revenueDay.length - 1]
+      } else {
+        window.$message.error(res.msg)
+      }
+    }
+
+    onMounted(() => {
+      getStatistics()
+    })
+    return { LocationOutline, CallOutline, chartData, cardData, effectiveOrder, incomeToday }
   }
 }
 </script>

@@ -1,7 +1,12 @@
 <template>
   <n-row>
-    <a style="margin-right: 16px">统计范围</a>
+    <n-space style="align-items: center;">
+    <a>统计范围</a>
     <n-date-picker v-model:value="range" type="daterange" clearable />
+    <n-button type="primary" @click="getSalesData">
+      查询
+    </n-button>
+    </n-space>
   </n-row>
   <n-row>
     <n-card title="营业额统计" header-style="text-align: left" segmented>
@@ -58,12 +63,13 @@
 
 <script>
 import { ref, reactive, computed } from 'vue'
+import { post } from '@/utils/request'
 export default {
   name: 'sales',
   setup () {
     const range = ref([Date.now(), Date.now()])
 
-    const category = reactive([
+    const category = ref([
       {
         name: '积分消费',
         value: 460.00
@@ -100,7 +106,7 @@ export default {
 
     const total = computed(() => {
       let total = 0
-      category.forEach(item => { total += item.value })
+      category.value.forEach(item => { total += item.value })
       return total
     })
 
@@ -123,7 +129,7 @@ export default {
       tooltip: {
         trigger: 'item'
       },
-      series: category.map(item => {
+      series: category.value.map(item => {
         return {
           name: item.name,
           data: [(item.value / total.value * 100).toFixed(2)],
@@ -162,12 +168,10 @@ export default {
       })
     })
 
-    const dishData = reactive({
+    const dishData = ref({
       xAxis: {
         type: 'category',
-        data: sortedDishes.value.map(item => {
-          return item.name
-        })
+        data: ['宫保鸡丁', '蒜泥白肉', '鱼香肉丝', '水煮鱼', '青椒肉丝']
       },
       yAxis: {
         type: 'value'
@@ -176,14 +180,35 @@ export default {
         {
           name: '销量',
           type: 'bar',
-          data: sortedDishes.value.map(item => {
-            return item.amount
-          })
+          data: [10, 22, 33, 8, 24]
         }
       ]
     })
 
-    return { range, category, total, incomeData, sortedDishes, dishData }
+    const getSalesData = async () => {
+      const res = await post('/order/getsalesitu', {
+        btime: range.value[0],
+        etime: range.value[1]
+      })
+      if (res.code === 200) {
+        category.value[4].value = (res.data.saleData?.Else || 0)
+        category.value[6].value = (res.data.saleData?.Wechat || 0)
+        category.value[7].value = (res.data.saleData?.Alipay || 0)
+        dishData.value.series[0].data = []
+        dishData.value.xAxis.data = []
+        res.data.dishData.forEach(item => {
+          dishes.push({
+            name: item[0],
+            amount: item[1]
+          })
+          dishData.value.xAxis.data.push(item[0])
+          dishData.value.series[0].data.push(item[1])
+        })
+        console.log(sortedDishes, dishData)
+      }
+    }
+
+    return { range, category, total, incomeData, sortedDishes, dishData, getSalesData }
   }
 }
 </script>

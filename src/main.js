@@ -14,7 +14,8 @@ import {
 } from 'echarts/charts'
 import {
   GridComponent,
-  TooltipComponent
+  TooltipComponent,
+  GraphicComponent
 } from 'echarts/components'
 
 use([
@@ -22,7 +23,8 @@ use([
   LineChart,
   BarChart,
   GridComponent,
-  TooltipComponent
+  TooltipComponent,
+  GraphicComponent
 ])
 
 const app = createApp(App).use(store).use(router)

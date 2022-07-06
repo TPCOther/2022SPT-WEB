@@ -1,6 +1,7 @@
 import { reactive, ref, h, defineComponent, nextTick } from 'vue'
-import { NSelect, NSpace, NButton } from 'naive-ui'
-export const useStaffEffect = () => {
+import { NSelect, NSpace, NButton, NInput } from 'naive-ui'
+import { post } from './request'
+export const useStaffEffect = (newStaff) => {
   const data = [
     {
       id: 1,
@@ -37,14 +38,22 @@ export const useStaffEffect = () => {
     {
       title: '员工姓名',
       key: 'name',
-      sorter: 'default'
+      sorter: 'default',
+      render (row, index) {
+        return h(ShowOrEditInput, {
+          value: row.name,
+          onUpdateValue (v) {
+            datas.value[index].phone = v
+          }
+        })
+      }
     },
     {
       title: '员工权限',
       key: 'role',
       sorter: 'default',
       render (row, index) {
-        return h(ShowOrEdit, {
+        return h(ShowOrEditSelect, {
           value: row.role,
           onUpdateValue (v) {
             datas.value[index].role = v
@@ -55,23 +64,31 @@ export const useStaffEffect = () => {
     {
       title: '手机号',
       key: 'phone',
-      sorter: 'default'
+      sorter: 'default',
+      render (row, index) {
+        return h(ShowOrEditInput, {
+          value: row.phone,
+          onUpdateValue (v) {
+            datas.value[index].phone = v
+          }
+        })
+      }
     },
     {
       title: '操作',
       key: 'actions',
-      render (row) {
+      render (row, index) {
         return h(
           NSpace, {}, [
             h(NButton, {
               type: 'primary',
               size: 'small',
-              onClick: () => { console.log(row) }
+              onClick: () => { staffModify(row) }
             }, '修改'),
             h(NButton, {
               type: 'error',
               size: 'small',
-              onClick: () => { console.log(row) }
+              onClick: () => { staffDelete(row, index) }
             }, '删除')
           ]
         )
@@ -79,7 +96,7 @@ export const useStaffEffect = () => {
     }
   ]
 
-  const datas = ref([...data, ...data, ...data, ...data, ...data, ...data])
+  const datas = ref([...data])
 
   const roles = [
     {
@@ -109,7 +126,7 @@ export const useStaffEffect = () => {
     }
   })
 
-  const ShowOrEdit = defineComponent({
+  const ShowOrEditSelect = defineComponent({
     props: {
       value: [String, Number],
       onUpdateValue: [Function, Array]
@@ -150,5 +167,108 @@ export const useStaffEffect = () => {
     }
   })
 
-  return { datas, columns, pagination, roles }
+  const ShowOrEditInput = defineComponent({
+    props: {
+      value: [String, Number],
+      onUpdateValue: [Function, Array]
+    },
+    setup (props) {
+      const isEdit = ref(false)
+      const inputRef = ref(null)
+      const inputValue = ref(props.value)
+      function handleOnClick () {
+        isEdit.value = true
+        nextTick(() => {
+          inputRef.value.focus()
+        })
+      }
+      function handleChange () {
+        props.onUpdateValue(inputValue.value)
+        isEdit.value = false
+      }
+      return () =>
+        h(
+          'div',
+          {
+            onClick: handleOnClick
+          },
+          isEdit.value
+            ? h(NInput, {
+              ref: inputRef,
+              value: inputValue.value,
+              onUpdateValue: (v) => {
+                inputValue.value = v
+              },
+              onChange: handleChange,
+              onBlur: handleChange
+            })
+            : props.value
+        )
+    }
+  })
+
+  const getStaff = async () => {
+    const res = await post('/staff/select')
+    if (res.code === 200) {
+      res.data.forEach((item) => {
+        datas.value.push({
+          id: item.staffId,
+          name: item.staffName,
+          role: item.staffPosition,
+          phone: item.staffPhone
+        })
+      })
+    } else {
+      window.$message.error(res.msg)
+    }
+  }
+
+  const staffModify = async (row) => {
+    const res = await post('/staff/update', {
+      staffId: row.id,
+      staffName: row.name,
+      staffPosition: row.role,
+      staffPhone: row.phone
+    })
+    if (res.code === 200) {
+      window.$message.success('修改成功')
+    } else {
+      window.$message.error(res.msg)
+    }
+  }
+
+  const staffDelete = async (row, index) => {
+    const res = await post('/staff/delete', {
+      staffId: row.id
+    })
+    if (res.code === 200) {
+      window.$message.success('删除成功')
+      datas.value.splice(index, 1)
+    } else {
+      window.$message.error(res.msg)
+    }
+  }
+
+  const addStaff = async () => {
+    const res = await post('/staff/insert', {
+      staffName: newStaff.value.name,
+      staffPosition: newStaff.value.role,
+      staffPhone: newStaff.value.phone,
+      staffAccount: newStaff.value.username,
+      staffPassword: newStaff.value.password
+    })
+    if (res.code === 200) {
+      window.$message.success('添加成功')
+      datas.value.push({
+        id: res.data.staffId,
+        name: newStaff.value.name,
+        role: newStaff.value.role,
+        phone: newStaff.value.phone
+      })
+    } else {
+      window.$message.error(res.msg)
+    }
+  }
+
+  return { datas, columns, pagination, roles, getStaff, addStaff }
 }
